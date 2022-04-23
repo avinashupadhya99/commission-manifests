@@ -9,8 +9,13 @@ alias k=kubectl
 ```
 
 ```bash
-k apply -f order-service/database-secret.yaml
+k apply -f database-secret.yaml
+k apply -f rabbitmq-secret.yaml
 k apply -f order-service/deployment.yaml
+k apply -f order-service/service.yaml
+k apply -f billing-service/deployment.yaml
+k apply -f billing-service/service.yaml
+k apply -f email-service/deployment.yaml
 ```
 
 https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
@@ -40,7 +45,7 @@ eksctl create iamserviceaccount \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --role-name "AmazonEKSLoadBalancerControllerRole" \
-  --attach-policy-arn=arn:aws:iam::<account_id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --attach-policy-arn=arn:aws:iam::$ACCOUNT_ID:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
 ```
 
@@ -52,7 +57,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set serviceAccount.name=aws-load-balancer-controller \
   --set image.repository=602401143452.dkr.ecr.ap-south-1.amazonaws.com/amazon/aws-load-balancer-controller \
   --set region=ap-south-1 \
-  --set vpcId=vpc-0e3c93c8d7fcc79fa
+  --set vpcId=vpc-$VPC_ID
 ```
 
 https://aws.amazon.com/premiumsupport/knowledge-center/eks-set-up-externaldns/
@@ -68,7 +73,7 @@ eksctl create iamserviceaccount \
   --name external-dns \
   --namespace kube-system \
   --cluster commission-cluster  \
-  --attach-policy-arn arn:aws:iam::<account_id>:policy/Route53ExternalDNSIAMPolicy \
+  --attach-policy-arn arn:aws:iam::$ACCOUNT_ID:policy/Route53ExternalDNSIAMPolicy \
   --approve
 ```
 
@@ -77,6 +82,5 @@ k apply -f external-dns.yaml
 ``` 
 
 ```bash
-k apply -f order-service/service.yaml
 k apply -f order-service/ingress.yaml
 ```
