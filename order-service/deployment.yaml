@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name:  order-service
@@ -7,6 +7,10 @@ metadata:
     component: commission
     env: dev
 spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: order-service
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -15,13 +19,14 @@ spec:
   template:
     metadata:
       labels:
-        name:  order-service
+        app.kubernetes.io/name: order-service
         component: commission
         env: dev
     spec:
       containers:
       - image:  avinashupadhya99/order-service:0.1.0
         name:  order
+        imagePullPolicy: Always
         resources:
           requests:
             cpu: "20m"
@@ -41,40 +46,39 @@ spec:
         env:
         - name:  DATABASE_HOST
           valueFrom:
-          secretKeyRef:
-            name: commission-database
-            key: host
-            optional: false
+            secretKeyRef:
+              name: commission-database
+              key: host
+              optional: false
         - name:  DATABASE_NAME
           valueFrom:
-          secretKeyRef:
-            name: commission-database
-            key: name
-            optional: false
+            secretKeyRef:
+              name: commission-database
+              key: name
+              optional: false
         - name:  DATABASE_PORT
           valueFrom:
-          secretKeyRef:
-            name: commission-database
-            key: port
-            optional: false
+            secretKeyRef:
+              name: commission-database
+              key: port
+              optional: false
         - name:  DATABASE_USER
           valueFrom:
-          secretKeyRef:
-            name: commission-database
-            key: user
-            optional: false
+            secretKeyRef:
+              name: commission-database
+              key: user
+              optional: false
         - name:  DATABASE_PASSWORD
           valueFrom:
-          secretKeyRef:
-            name: commission-database
-            key: password
-            optional: false
+            secretKeyRef:
+              name: commission-database
+              key: password
+              optional: false
         - name:  PRODUCE_SERVICE_URL
-          value: https://
+          value: http://produce-service.avinashupadhyaya.live
         - name:  BILLING_SERVICE_URL
-          value: https://
+          value: http://billing-service.avinashupadhyaya.live
         ports:
         - containerPort:  8080
           name:  spring-boot
       restartPolicy: Always
-      imagePullPolicy: Always
