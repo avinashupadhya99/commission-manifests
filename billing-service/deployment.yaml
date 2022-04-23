@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-service
+  labels:
+    name: billing-service
+    component: commission
+    env: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: billing-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: billing-service
+        component: commission
+        env: dev
+    spec:
+      containers:
+      - image:  avinashupadhya99/billing-service:0.1.0
+        name:  billing
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "55M"
+        livenessProbe:
+          httpGet:
+            path: /_status/healthz
+            port: 8080
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_status/healthz
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        env:
+        - name: DATABASE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: commission-database
+              key: host
+              optional: false
+        - name: DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: commission-database
+              key: name
+              optional: false
+        - name: DATABASE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: commission-database
+              key: port
+              optional: false
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: commission-database
+              key: user
+              optional: false
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: commission-database
+              key: password
+              optional: false
+        - name: RABBITMQ_HOST
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: host
+              optional: false
+        - name: RABBITMQ_VHOST
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: vhost
+              optional: false
+        - name: RABBITMQ_PORT
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: port
+              optional: false
+        - name: RABBITMQ_USER
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: user
+              optional: false
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: password
+              optional: false
+        - name: RABBITMQ_EXCHANGE
+          value: commission.exchange
+        - name: RABBITMQ_QUEUE
+          value: commission.email.queue
+        - name: RABBITMQ_ROUTINGKEY
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: routing_key
+              optional: false
+        ports:
+        - containerPort: 8080
+          name: spring-boot
+      restartPolicy: Always
