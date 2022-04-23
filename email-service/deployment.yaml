@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-service
+  labels:
+    name: email-service
+    component: commission
+    env: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: email-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: email-service
+        component: commission
+        env: dev
+    spec:
+      containers:
+      - image: avinashupadhya99/email-service:0.1.0
+        name: email
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "55M"
+        env:
+        - name: RABBITMQ_HOST
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: host
+              optional: false
+        - name: RABBITMQ_VHOST
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: vhost
+              optional: false
+        - name: RABBITMQ_PORT
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: port
+              optional: false
+        - name: RABBITMQ_USER
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: user
+              optional: false
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: commission-rabbitmq
+              key: password
+              optional: false
+        - name: RABBITMQ_QUEUE
+          value: commission.email.queue
+      restartPolicy: Always
