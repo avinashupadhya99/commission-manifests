@@ -14,7 +14,9 @@ data:
   output.conf: |
     [OUTPUT]
         Name cloudwatch_logs
-        Match   *
+        Match *
         region ap-south-1
         log_group_name commission-cloudwatch
         log_stream_prefix commission-component-
+        auto_create_group true
+        log_key log

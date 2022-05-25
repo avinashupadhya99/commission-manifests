@@ -14,3 +14,4 @@ fargateProfiles:
       - namespace: kube-system
       - namespace: application
       - namespace: cert-manager
+      - namespace: aws-observability
