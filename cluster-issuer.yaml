@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-cluster-issuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: avinashupadhya99@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-cluster-issuer-key
+    solvers:
+    - selector:
+        dnsZones:
+          - "order-service.avinashupadhyaya.live"
+      http01:
+       ingress:
+         class: alb
+    # solvers:
+    # - selector:
+    #     dnsZones:
+    #       - "order-service.avinashupadhyaya.live"
+    #   dns01:
+    #     route53:
+    #       region: ap-south-1
+    #       hostedZoneID: Z008787220C2PRZD3CPS0 
+    #       role: arn:aws:iam::560483011330:role/CertManagerRoute53DNS
+    #       accessKeyID: AKIAYE73EBMBKYUGVDPO
+    #       secretAccessKeySecretRef:
+    #         name: prod-route53-credentials-secret
+    #         key: secret-access-key
