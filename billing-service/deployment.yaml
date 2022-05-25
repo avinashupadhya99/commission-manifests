@@ -6,9 +6,9 @@ metadata:
     component: commission
     tags.datadoghq.com/service: billing-service
     tags.datadoghq.com/env: dev
-    tags.datadoghq.com/version: "0.1.0"
+    tags.datadoghq.com/version: "0.1.2"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: billing-service
@@ -24,11 +24,11 @@ spec:
         component: commission
         tags.datadoghq.com/service: billing-service
         tags.datadoghq.com/env: dev
-        tags.datadoghq.com/version: "0.1.0"
+        tags.datadoghq.com/version: "0.1.2"
     spec:
       serviceAccountName: datadog-agent
       containers:
-      - image:  avinashupadhya99/billing-service:0.1.0
+      - image:  avinashupadhya99/billing-service:0.1.2
         name:  billing
         imagePullPolicy: Always
         resources:

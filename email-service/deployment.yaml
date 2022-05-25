@@ -5,9 +5,9 @@ metadata:
   labels:
     tags.datadoghq.com/service: email-service
     tags.datadoghq.com/env: dev
-    tags.datadoghq.com/version: "0.1.0"
+    tags.datadoghq.com/version: "0.1.1"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: email-service
@@ -23,11 +23,11 @@ spec:
         component: commission
         tags.datadoghq.com/service: email-service
         tags.datadoghq.com/env: dev
-        tags.datadoghq.com/version: "0.1.0"
+        tags.datadoghq.com/version: "0.1.1"
     spec:
       serviceAccountName: datadog-agent
       containers:
-      - image: avinashupadhya99/email-service:0.1.0
+      - image: avinashupadhya99/email-service:0.1.1
         name: email
         imagePullPolicy: Always
         resources:

@@ -6,9 +6,9 @@ metadata:
     component: commission
     tags.datadoghq.com/service:  order-service
     tags.datadoghq.com/env: dev
-    tags.datadoghq.com/version: "0.1.0"
+    tags.datadoghq.com/version: "0.1.1"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: order-service
@@ -24,11 +24,11 @@ spec:
         component: commission
         tags.datadoghq.com/service:  order-service
         tags.datadoghq.com/env: dev
-        tags.datadoghq.com/version: "0.1.0"
+        tags.datadoghq.com/version: "0.1.1"
     spec:
       serviceAccountName: datadog-agent
       containers:
-      - image:  avinashupadhya99/order-service:0.1.0
+      - image:  avinashupadhya99/order-service:0.1.1
         name:  order
         imagePullPolicy: Always
         resources:
@@ -44,41 +44,43 @@ spec:
             port: 8080
           initialDelaySeconds: 240
           timeoutSeconds: 10
+          periodSeconds: 600
         readinessProbe:
           httpGet:
             path: /_status/healthz
             port: 8080
           initialDelaySeconds: 180
           timeoutSeconds: 10
+          periodSeconds: 600
         env:
         - name:  DATABASE_HOST
           valueFrom:
             secretKeyRef:
-              name: commission-database
+              name: commission-database-1
               key: host
               optional: false
         - name:  DATABASE_NAME
           valueFrom:
             secretKeyRef:
-              name: commission-database
+              name: commission-database-1
               key: name
               optional: false
         - name:  DATABASE_PORT
           valueFrom:
             secretKeyRef:
-              name: commission-database
+              name: commission-database-1
               key: port
               optional: false
         - name:  DATABASE_USER
           valueFrom:
             secretKeyRef:
-              name: commission-database
+              name: commission-database-1
               key: user
               optional: false
         - name:  DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: commission-database
+              name: commission-database-1
               key: password
               optional: false
         - name:  PRODUCE_SERVICE_URL
