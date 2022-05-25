@@ -8,8 +8,16 @@ eksctl create cluster -f eks-cluster-config.yaml
 alias k=kubectl
 ```
 
+### Datadog
+
+```bash
+k apply -f datadog-secret.yaml
+k apply -f datadog-rbac.yaml
+```
+
 ```bash
 k apply -f database-secret.yaml
+k apply -f db-secret.yaml
 k apply -f rabbitmq-secret.yaml
 k apply -f order-service/deployment.yaml
 k apply -f order-service/service.yaml
@@ -82,7 +90,7 @@ k apply -f external-dns.yaml
 ``` 
 
 ```bash
-k apply -f order-service/ingress.yaml
+k apply -f ingress.yaml
 ```
 
 ### Logging
